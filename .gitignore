@@ -1,0 +1,26 @@
+# Dữ liệu riêng của văn phòng: KHÔNG bao giờ lên git (API key, nhân viên, nhật ký, thư, kết quả)
+state/
+inbox/
+outputs/
+dist/
+# Project riêng (chỉ giữ khung)
+projects/*
+!projects/_template/
+# Skill riêng tư (đường dẫn, nội dung paper / đề của sếp) — khớp office.list_skills() private
+skills/dang-de-len-portal/
+skills/de-song-kieu-khoa-dien-tu/
+skills/review-paper/
+skills/viet-paper-q1/
+# Rác máy
+__pycache__/
+*.pyc
+*.bak*
+*.log
+*.tmp
+node_modules/
+.claude/
+.vscode/
+.idea/
+.env
+*.key
+*.pem
