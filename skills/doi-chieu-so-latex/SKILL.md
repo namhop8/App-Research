@@ -13,7 +13,7 @@ Mỗi số trong paper truy được về một khoá trong `results/` (quy tắ
 2. **Chạy** từ `projects/<tên>/` (PowerShell):
 ```powershell
 $env:OMP_NUM_THREADS=2; $env:MKL_NUM_THREADS=2; $env:OPENBLAS_NUM_THREADS=2
-python -I E:\ResearchLab\skills\doi-chieu-so-latex\check_numbers.py `
+python -I <thư mục app>\skills\doi-chieu-so-latex\check_numbers.py `
   --tex paper/main.tex paper/macros.tex paper/tab_*.tex `
   --results results/ --prose --out acceptance/evidence/numbers.md
 ```

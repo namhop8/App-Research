@@ -9,9 +9,11 @@ Kết quả lưu outputs/<nhân viên>/ và hiện như một việc 📺 trong 
 giao lại, không đưa vào quy trình duyệt (giao lại theo cách thường sẽ làm mất tính "mù").
 """
 
+import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from datetime import datetime
 from pathlib import Path
@@ -20,7 +22,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import office  # noqa: E402
 import providers  # noqa: E402
 
-SANDBOX = Path(r"E:\Review-Mu")
+# Thư mục làm việc tách riêng của người phản biện mù (không thấy gì khác của văn phòng). Đổi bằng BLIND_REVIEW_DIR.
+SANDBOX = Path(os.environ.get("BLIND_REVIEW_DIR") or Path(tempfile.gettempdir()) / "Review-Mu")
 CHUNK = 15000  # ký tự mỗi đoạn: vừa lời nhắn đưa thẳng vào dòng lệnh (agy)
 ROLE = ("Bạn là reviewer của một tạp chí Q1 về an ninh mạng (Computers & Security / Expert Systems with Applications). "
         "Bạn chỉ có văn bản của MỘT bài báo (chữ trích từ file PDF) được dán trong lời nhắn. Không dùng công cụ, không "

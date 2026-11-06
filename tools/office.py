@@ -46,8 +46,6 @@ DEFAULT_DEPTS = {
     "reception": {"name": "Quầy lễ tân", "icon": "🛎️", "order": 0, "system": True},
     # sếp vào đây cấp quyền: việc đang chờ quyền + quyền thường trực của từng nhân viên + thư mục từng phòng
     "quyen": {"name": "Phòng Cấp quyền", "icon": "🔐", "order": 0, "system": True, "kind": "perms"},
-    # AI giải đề "mù": không nhận thư, không biết luồng tạo đề; chỉ chạy qua tools/tester.py
-    "thu-de": {"name": "Phòng Thử đề", "icon": "🧪", "order": 4, "system": True, "kind": "tester"},
     # Thư mục làm việc tương đối được tính từ thư mục gốc của app, nên mang app sang máy khác vẫn chạy
     "research": {"name": "Phòng Nghiên cứu", "icon": "🔬", "order": 1, "workdir": "projects",
                  "notes": "Tuân thủ RULES.md: thí nghiệm trước, số liệu sinh tự động, chỉ trích dẫn Q1/A*."},
@@ -921,12 +919,24 @@ def term_poll(jid, stop=False):
 _TEST = {"proc": None, "what": "", "cache": None, "t": 0}
 
 
+def tester_available():
+    """Bản chia sẻ không kèm Phòng Thử đề CTF (tools/tester.py): mọi chức năng thử đề tự tắt."""
+    return (ROOT / "tools" / "tester.py").exists()
+
+
+def _need_tester():
+    if not tester_available():
+        raise ValueError("Bản này không có Phòng Thử đề (thiếu tools/tester.py)")
+
+
 def _test_running():
     p = _TEST["proc"]
     return _TEST["what"] if p and p.poll() is None else ""
 
 
 def tester_list():
+    if not tester_available():
+        return {"items": [], "running": ""}
     if not _TEST["cache"] or now() - _TEST["t"] > 15 or (_TEST["what"] and not _test_running()):
         import importlib
         import tester
@@ -938,6 +948,7 @@ def tester_list():
 
 
 def _test_item(where, slug):
+    _need_tester()
     import tester
     w = Path(where).resolve()
     if tester.CHALL_ROOT.resolve() not in [w, *w.parents]:
@@ -968,6 +979,8 @@ def tester_run(where, slug):
 def tester_run_wait(where, timeout=1800):
     """Mò thử mù cả gói đề rồi trả về chữ kết quả (chờ tới lượt nếu Mò đang thử đề khác). Không tốn lượt AI của văn phòng."""
     import subprocess
+    if not tester_available():
+        return 1, "⚠️ LỖI: bản này không có Phòng Thử đề (thiếu tools/tester.py)"
     end = time.time() + 3600
     while _test_running() and time.time() < end:
         time.sleep(5)
@@ -988,6 +1001,7 @@ def tester_run_wait(where, timeout=1800):
 
 def tester_deploy(where, slug, publish=False):
     """Sếp bấm 🚀 Giao deploy: đề đã ĐẠT bài thử → người deploy của Phòng CLB đăng lên portal."""
+    _need_tester()
     import tester
     import workflow
     w, it = _test_item(where, slug)

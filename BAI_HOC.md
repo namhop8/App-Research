@@ -12,30 +12,18 @@ Những lỗi đã gặp thật và cách app xử lý. Sửa app thì đọc fi
 4. **Thiếu quyền thì hỏi đúng 1 lần** bằng [CẦN SẾP], nêu rõ quyền cần (ghi thư mục nào, chạy lệnh gì). Không hỏi lại
    cùng một thứ (ghi trong Sổ nội quy).
 
-## Tạo đề CTF
-5. **Vòng "làm lại cho tới khi ĐẠT" phải có giới hạn cứng.** tools/tester.py đếm `tries` (trượt liên tiếp) trong
-   `<gói>/_thu-de.json`; người tạo đề tự thử quá 3 lần thì bị chặn và phải [CẦN SẾP] kèm 2-3 hướng thiết kế khác.
-   Sếp bấm 🧪 Thử ở Phòng Thử đề thì không giới hạn. Đề ĐẠT thì đếm lại từ 0.
-6. **Đề tạm ở `E:\CTF\challenges\nhap\<gói>\`.** Mò (AI thử mù) chỉ nhận mô tả + file phát trong `E:\CTF-ThuDe\`,
-   không có nội quy/skill/vai trò; đề có máy dựng container tạm trên VPS (127.0.0.1) + đường hầm SSH.
-7. **Danh sách đề phải lấy từ bản xuất portal** (`challenges\_vps\<ngày>\portal-export`), máy không có đủ bản gốc.
-
 ## Giao diện
-8. **Hồ sơ nhân viên ở phòng hệ thống** (Mò ở Phòng Thử đề): ô "Phòng" phải luôn có phòng hiện tại, nếu không bấm
+8. **Hồ sơ nhân viên ở phòng hệ thống**: ô "Phòng" phải luôn có phòng hiện tại, nếu không bấm
    Lưu sẽ chuyển người đó sang phòng khác.
 9. **Thư hỏi sếp đã trả lời/bỏ qua phải đổi thành `.done.md`**, nếu không mũi tên trên bản đồ còn mãi.
 10. **Ô gõ trong phòng:** khi đang gõ thì không vẽ lại phòng (mất chữ, mất con trỏ).
 
 ## Khởi động lại
-11. Không khởi động lại khi có người đang làm (trừ khi lượt đó chỉ đọc). Sửa tools/tester.py không cần khởi động lại
-    (văn phòng tự nạp lại); sửa office.py / workers.py / workflow.py thì phải khởi động lại lúc mọi người rảnh.
+11. Không khởi động lại khi có người đang làm (trừ khi lượt đó chỉ đọc). Sửa office.py / workers.py / workflow.py thì phải khởi động lại lúc mọi người rảnh.
 
 ## Dừng tiến trình
 12. **Hết giờ / dừng phải diệt CẢ CÂY tiến trình** (taskkill /T /F). Chỉ diệt claude.exe thì bash/python con vẫn giữ
-    luồng ra, app đứng chờ mãi (Mò chạy quá 2 phút dù giới hạn 120 s). providers._stream và workers.cancel_task dùng cây.
-13. **Mò do người tạo đề gọi chạy thành nhánh riêng:** dừng người tạo đề xong phải dọn Mò mồ côi
-    (office._kill_testers: tester.py / CTF-ThuDe / ctftest-). Mọi nhân viên (cả Thư ký, Phó sếp, Mò) có ■ Dừng
-    khi đang chạy; mỗi phòng có ■ Dừng cả phòng.
+    luồng ra, app đứng chờ mãi. providers._stream và workers.cancel_task dùng cây.
 
 ## Phân việc và chống quay vòng
 14. **Mặc định "🤖 Tự chọn theo độ khó"** (workflow.classify, không tốn lượt AI): việc cơ bản (hỏi, xem, tìm, ý tưởng)
@@ -70,20 +58,8 @@ Những lỗi đã gặp thật và cách app xử lý. Sửa app thì đọc fi
     Lỗi ở bước duyệt: sếp đồng ý thì chạy lại đúng bước duyệt, không bắt người làm làm lại. Hết giờ giờ báo rõ
     "Hết giờ: lượt chạy quá N giây" (providers._stream) thay vì "thoát với mã 1".
 
-## Người tạo đề không tự giải đề
-24. **Người tạo đề chỉ TẠO ĐỀ + VIẾT solve.py** (sếp chốt 2026-10-24, sau việc #53: Ổi tự chạy solve.py mô phỏng
-    hàng chục lần, quá giờ 30 phút). Cờ `maker: true` trên hồ sơ → workers không cho lệnh terminal (chỉ Read/Write/Edit),
-    kể cả khi sếp bấm 🔓. Nộp xong, workflow tự giao Mò thử MÙ (office.tester_run_wait, stage `blind_test`):
-    TRƯỢT → trả lại người tạo đề kèm cách Mò giải; thiếu challenges.json → trả lại; lỗi/⛔ → hỏi sếp; ĐẠT → trưởng
-    phòng duyệt → sếp ký → Mít đăng NHÁP. Vai trò, nút việc của 6 người tạo đề và 2 skill CTF đã ghi rõ phân vai.
-25. **Mò full quyền đọc/ghi/lệnh/web, chỉ CẤM đọc lời giải** (sếp chốt 2026-10-24). tester.py: --add-dir C:\ D:\ E:\, Bash không giới hạn, và --disallowedTools Read/Edit/Write/Grep/Glob(//e/CTF/**, //e/ResearchLab/**, lịch sử chat) chặn cứng (đã chạy thử bằng haiku: E:\CTF bị chặn, chỗ khác đọc được). Lệnh Bash không chặn được theo đường dẫn nên soát TOÀN BỘ tham số công cụ (providers.TOOL_LOG): đụng E:/CTF/, ResearchLab, secret.json, _thu-de, .claude/projects (kể cả cố đọc mà bị chặn) → kết quả "loi" KHÔNG TÍNH. Regex chữ ổ đĩa phải là `(?<![a-z])` (http:// có "p:/"); E:\CTF-ThuDe (thư mục thử) không bị tính; Mò tự đặt tên script solve.py là bình thường.
-26. **Nhân viên ngồi phòng khác vẫn theo quy định phòng gốc:** `work_dept` (vd. Mít ngồi Phòng Thử đề cạnh Mò, làm theo
-    quy định/lệnh/thư mục của Phòng CLB). workers dùng work_dept; nút việc gửi về work_dept; tester_deploy tìm người deploy
-    theo dept hoặc work_dept = clb.
-27. **Đề "đã đăng" mà portal không hiện:** portal chỉ hiện 9 mảng cố định (app/__init__.py CATEGORIES: Web, Pwn, Crypto,
-    Reverse, Forensics, OSINT, Misc, Hardware, Prompt Security). reg_challenges.py từng đổi `ai` → "AI Security" (không có
-    trong danh sách) nên đề #81 có trong DB, published, máy chạy, nhưng không ai thấy. Đã đổi `ai` → "Prompt Security".
-    Báo cáo "đã đăng" phải kiểm cả mảng nằm trong CATEGORIES, không chỉ status trong DB.
+26. **Nhân viên ngồi phòng khác vẫn theo quy định phòng gốc:** `work_dept` (ngồi một phòng nhưng làm theo
+    quy định/lệnh/thư mục của phòng khác). workers dùng work_dept; nút việc gửi về work_dept.
 28. **Phòng chốt quy trình** (`dept.flow`, vd. Phòng Game = "fast"): mọi lệnh vào phòng đi thẳng làm → sếp duyệt, không
     qua trưởng phòng / Phó sếp, không vòng trả lại. Việc lớn chia BƯỚC trong file đề (BRIEF_ART.md), mỗi bước một việc,
     sếp duyệt xong mới giao bước sau (thay cho vòng duyệt tự động).

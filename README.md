@@ -16,8 +16,8 @@ Muốn nhân viên AI làm việc thật thì cài và đăng nhập ngay trong 
 
 - **🛎️ Quầy lễ tân**
   - **Tèo** (Thư ký, đổi tên được): khi nhân viên cần quyền sửa file, cần chạy lệnh deploy hoặc cần đăng nhập, Tèo mang lên hỏi sếp. Bấm 🔔 để nhận thông báo.
-  - **Phó sếp**: giữ "lệnh thường trực" của sếp (ví dụ *"cứ deploy hết đi"* cho phòng CLB) và duyệt thay khi khớp. Những việc nguy hiểm (`rm -rf`, `prune`, `push --force`, `DROP TABLE`…) và việc đăng nhập thì Phó sếp không bao giờ duyệt thay.
-- **Phòng ban** (🔬 Nghiên cứu, 🌐 Web & Deploy, 🛡️ CLB An ninh mạng, thêm được phòng mới): mỗi phòng có thư mục làm việc và quy định riêng.
+  - **Phó sếp**: giữ "lệnh thường trực" của sếp (ví dụ *"cứ deploy hết đi"* cho phòng Web) và duyệt thay khi khớp. Những việc nguy hiểm (`rm -rf`, `prune`, `push --force`, `DROP TABLE`…) và việc đăng nhập thì Phó sếp không bao giờ duyệt thay.
+- **Phòng ban** (🔬 Nghiên cứu, 🌐 Web & Deploy, 🧰 Kỹ năng, 🔐 Cấp quyền; thêm được phòng mới): mỗi phòng có thư mục làm việc và quy định riêng.
 - **Nhân viên**: bấm vào một người để chọn nhà cung cấp, chọn model, cài đặt, đăng nhập, nhập API key, kiểm tra kết nối, đổi phòng, đổi diện mạo hoặc cho nghỉ việc. Bấm vào bàn trống "＋" để tuyển người mới.
 
 ## Nhà cung cấp hỗ trợ
@@ -86,8 +86,7 @@ Mở Codex ở thư mục gốc repo. Codex đọc `AGENTS.md` (mục "Khi sửa
 | `tools/workers.py` | nhân viên tự nhận thư, chạy nền, ngủ khi hết quota |
 | `tools/providers.py` | gọi Claude Code / Codex / Gemini / Antigravity CLI và API kiểu OpenAI |
 | `tools/workflow.py` | quy trình nhiều cấp duyệt theo phòng |
-| `tools/tester.py` | phòng Thử đề CTF (AI giải mù); máy chạy đề tạm cấu hình qua `CTF_VPS` hoặc `state/ctf_vps.txt` |
 | `tools/troubleshoot.py`, `sysmon.py`, `blind_review.py` | chẩn đoán, theo dõi máy, phản biện mù |
 | `app/index.html` | toàn bộ giao diện |
-| `skills/` | kỹ năng dùng chung nhân viên đọc khi làm việc |
+| `skills/` | kỹ năng dùng chung nhân viên đọc khi làm việc (bản này chỉ giữ kỹ năng nghiên cứu / dùng chung) |
 | `PROMPT_DUNG_APP.md` | đặc tả gốc để dựng lại app từ đầu |

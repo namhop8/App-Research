@@ -218,7 +218,7 @@ def _blind_test(task_id, worker, out_rel):
     """Người tạo đề KHÔNG tự giải/thử: nộp gói xong, văn phòng giao Mò giải mù (tools/tester.py, không biết gì về đề).
     ĐẠT → trưởng phòng duyệt như thường. TRƯỢT → trả lại người tạo đề kèm cách Mò đã giải. Lỗi → hỏi sếp."""
     t = office.get_task(task_id)
-    root = Path("E:/CTF/challenges/nhap")
+    root = Path("challenges/nhap")
     try:
         import tester
         root = tester.CHALL_ROOT / "nhap"
@@ -342,7 +342,7 @@ def chain_next(dept_id):
 
 def _after_work(t, worker, out_rel, tested=False):
     office.set_task_fields(t["id"], output=out_rel)
-    if not tested and office.load()["agents"].get(worker, {}).get("maker"):  # người tạo đề nộp → Mò thử mù trước
+    if not tested and office.tester_available() and office.load()["agents"].get(worker, {}).get("maker"):  # người tạo đề nộp → Mò thử mù trước
         import threading
         office.set_task_fields(t["id"], stage="blind_test")
         office.move_task(t["id"], "review", actor=worker)
